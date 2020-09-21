@@ -8,6 +8,9 @@
   },
   "author": "Bert Spaan",
   "license": "ISC",
+  "engines": {
+    "node": "14.4.0"
+  },
   "dependencies": {
     "@here/olp-sdk-authentication": "^1.5.1",
     "@here/olp-sdk-dataservice-read": "^1.5.1",
