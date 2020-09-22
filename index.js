@@ -9,7 +9,7 @@ const olpRead = require('@here/olp-sdk-dataservice-read')
 const olpAuth = require('@here/olp-sdk-authentication')
 
 const H = require('highland')
-const pgp = require('pg-promise')()
+const { Client } = require('pg')
 
 const partitionIds = require('./partitions.json')
 
@@ -18,6 +18,8 @@ const accessKeySecret = process.env.HERE_ACCESS_KEY_SECRET
 
 // https://developer.here.com/documentation/traffic/dev_guide/topics/tiles.html
 const JAM_FACTOR_THRESHOLD = 4
+
+const databaseClient = new Client(process.env.DATABASE_URL)
 
 async function getDecoder (hrn, settings) {
   // Get schema with protobuf files
@@ -132,16 +134,23 @@ function getLayerClient (layer, settings) {
   }
 }
 
-async function insert (db, row) {
-  const query = 'INSERT INTO here.traffic_history (partition_id, segment_id, jam_factor, "data", "geometry") VALUES (${partitionId}, ${segmentId}, ${jamFactor}, ${data}, ST_SetSRID(ST_GeomFromGeoJSON(${geometry}), 4326))'
+async function insert (client, row) {
+  // const query = `
+  //   INSERT INTO here.traffic_history (partition_id, segment_id, jam_factor, "data", "geometry")
+  //   VALUES ($1, $2, $3, $4, ST_SetSRID(ST_GeomFromGeoJSON($5), 4326))`
 
-  await db.none(query, {
-    partitionId: row.partitionId,
-    segmentId: row.segmentId,
-    jamFactor: row.jamFactor,
-    data: row.data,
-    geometry: row.geometry
-  })
+  const wkt = row.geometry.coordinates.map((point) => point.join(' ')).join(', ')
+
+  const query = `
+    INSERT INTO here.traffic_history (partition_id, segment_id, jam_factor, "data", "geometry")
+    VALUES ($1, $2, $3, $4, ST_GeomFromText('LINESTRING(${wkt})', 4326))`
+
+  await client.query(query, [
+    row.partitionId,
+    row.segmentId,
+    row.jamFactor,
+    row.data
+  ])
 }
 
 async function downloadData () {
@@ -228,12 +237,12 @@ async function downloadData () {
     .flat()
     .filter((row) => row && row.jamFactor > JAM_FACTOR_THRESHOLD)
 
-  const db = pgp(process.env.DATABASE_URL)
+  await databaseClient.connect()
 
   H(rows)
-    .flatMap((row) => H(insert(db, row)))
+    .flatMap((row) => H(insert(databaseClient, row)))
     .done(async () => {
-      db.$pool.end()
+      await databaseClient.end()
     })
 }
 
