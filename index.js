@@ -137,7 +137,7 @@ function getLayerClient (layer, settings) {
 async function insert (client, row) {
   const query = `
     INSERT INTO here.traffic_history (partition_id, segment_id, jam_factor, "data", "geometry")
-    VALUES ($1, $2, $3, $4, ST_SetSRID(ST_GeomFromGeoJSON($5), 4326))`
+    VALUES ($1, $2, $3, $4, ST_SetSRID(ST_GeomFromGeoJSON($5::json), 4326))`
 
   await client.query(query, [
     row.partitionId,
