@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node serve.js"
   },
   "author": "Bert Spaan",
   "license": "ISC",
@@ -14,7 +14,9 @@
   "dependencies": {
     "@here/olp-sdk-authentication": "^1.5.1",
     "@here/olp-sdk-dataservice-read": "^1.5.1",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "express": "^4.17.1",
     "highland": "^2.13.5",
     "jszip": "^3.5.0",
     "pg": "^8.3.3",
