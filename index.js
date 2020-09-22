@@ -142,12 +142,8 @@ async function insert (client, row) {
   const wkt = row.geometry.coordinates.map((point) => point.join(' ')).join(', ')
 
   const query = `
-    INSERT INTO here.traffic_history (partition_id, segment_id, jam_factor, "data", "geometry")
-    VALUES ($1, $2, $3, $4, ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)',4269))`
-
-  // const query = `
-  //   INSERT INTO here.traffic_history (partition_id, segment_id, jam_factor, "data", "geometry")
-  //   VALUES ($1, $2, $3, $4, ST_GeomFromText('LINESTRING(${wkt})'::text, 4326))`
+    INSERT INTO traffic_history (partition_id, segment_id, jam_factor, "data", "geometry")
+    VALUES ($1, $2, $3, $4, ST_GeomFromText('LINESTRING(${wkt})'::text, 4326))`
 
   await client.query(query, [
     row.partitionId,

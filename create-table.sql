@@ -8,7 +8,7 @@ CREATE TABLE here.traffic_history (
   PRIMARY KEY(partition_id, segment_id, timestamp)
 );
 
-CREATE INDEX ON here.traffic_history (segment_id);
-CREATE INDEX ON here.traffic_history ("timestamp");
-CREATE INDEX ON here.traffic_history (jam_factor);
-CREATE INDEX ON here.traffic_history USING GIST ("geometry");
+CREATE INDEX ON traffic_history (segment_id);
+CREATE INDEX ON traffic_history ("timestamp");
+CREATE INDEX ON traffic_history (jam_factor);
+CREATE INDEX ON traffic_history USING GIST ("geometry");
