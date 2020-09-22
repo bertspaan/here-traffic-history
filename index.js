@@ -18,7 +18,6 @@ const accessKeySecret = process.env.HERE_ACCESS_KEY_SECRET
 
 // https://developer.here.com/documentation/traffic/dev_guide/topics/tiles.html
 const JAM_FACTOR_THRESHOLD = 4
-const BATCH_SIZE = 250
 
 const databaseClient = new Client(process.env.DATABASE_URL)
 
@@ -135,22 +134,18 @@ function getLayerClient (layer, settings) {
   }
 }
 
-async function insert (client, batch) {
-  const value = (row) => `(
-    ${row.partitionId},
-    ${row.segmentId},
-    ${row.jamFactor},
-    '${JSON.stringify(row.data).replace(/\'/g, '\'\'')}'::json
-  )`
-
-  // ,
-  // ST_SetSRID(ST_GeomFromGeoJSON('${JSON.stringify(row.geometry)}'), 4326)
-
+async function insert (client, row) {
   const query = `
-    INSERT INTO here.traffic_history (partition_id, segment_id, jam_factor, data)
-    VALUES ${batch.map(value).join(',')}`
+    INSERT INTO here.traffic_history (partition_id, segment_id, jam_factor, "data", "geometry")
+    VALUES ($1, $2, $3, $4, ST_SetSRID(ST_GeomFromGeoJSON($5), 4326))`
 
-  await client.query(query)
+  await client.query(query, [
+    row.partitionId,
+    row.segmentId,
+    row.jamFactor,
+    row.data,
+    row.geometry
+  ])
 }
 
 async function downloadData () {
@@ -218,7 +213,7 @@ async function downloadData () {
       .map((segment) => {
         const partitionId = partition.partitionId
         const segmentId = segment.identifier.split(':')[3]
-        if (trafficDataPerSegment[partitionId][segmentId]) {
+        if (trafficDataPerSegment[partitionId][segmentId] && segment.geometry.point.length === 2) {
           const trafficData = trafficDataPerSegment[partitionId][segmentId]
 
           return {
@@ -240,8 +235,7 @@ async function downloadData () {
   await databaseClient.connect()
 
   H(rows)
-    .batch(BATCH_SIZE)
-    .flatMap((batch) => H(insert(databaseClient, batch)))
+    .flatMap((row) => H(insert(databaseClient, row)))
     .done(async () => {
       await databaseClient.end()
     })
