@@ -140,12 +140,14 @@ async function insert (client, batch) {
     ${row.partitionId},
     ${row.segmentId},
     ${row.jamFactor},
-    '${JSON.stringify(row.data).replace(/\'/g, '\'\'')}'::json,
-    ST_SetSRID(ST_GeomFromGeoJSON('${JSON.stringify(row.geometry)}'::text), 4326)
+    '${JSON.stringify(row.data).replace(/\'/g, '\'\'')}'::json
   )`
 
+  // ,
+  // ST_SetSRID(ST_GeomFromGeoJSON('${JSON.stringify(row.geometry)}'), 4326)
+
   const query = `
-    INSERT INTO here.traffic_history (partition_id, segment_id, jam_factor, data, geometry)
+    INSERT INTO here.traffic_history (partition_id, segment_id, jam_factor, data)
     VALUES ${batch.map(value).join(',')}`
 
   await client.query(query)
