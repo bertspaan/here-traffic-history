@@ -16,7 +16,7 @@ scene:
 sources:
   here:
     type: MVT
-    url: https://here-traffic-history.herokuapp.com/tiles/{z}/{x}/{y}.pbf
+    url: https://here-traffic-history.herokuapp.com/tiles/{z}/{x}/{y}.mvt
     tile_size: 256
     max_zoom: 16
 
