@@ -20,9 +20,9 @@ app.listen(PORT, () => {
 })
 
 app.get('/tiles/:z/:x/:y.mvt', async (req, res) => {
-  const z = req.params.z
-  const x = req.params.x
-  const y = req.params.y
+  const z = parseInt(req.params.z)
+  const x = parseInt(req.params.x)
+  const y = parseInt(req.params.y)
 
   const query = `
     SELECT ST_AsMVT(ht, 'traffic_history') AS mvt
