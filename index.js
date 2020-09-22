@@ -213,7 +213,7 @@ async function downloadData () {
       .map((segment) => {
         const partitionId = partition.partitionId
         const segmentId = segment.identifier.split(':')[3]
-        if (trafficDataPerSegment[partitionId][segmentId] && segment.geometry.point.length === 2) {
+        if (trafficDataPerSegment[partitionId][segmentId]) {
           const trafficData = trafficDataPerSegment[partitionId][segmentId]
 
           return {
