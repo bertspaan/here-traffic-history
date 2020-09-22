@@ -135,21 +135,16 @@ function getLayerClient (layer, settings) {
 }
 
 async function insert (client, row) {
-  // const query = `
-  //   INSERT INTO here.traffic_history (partition_id, segment_id, jam_factor, "data", "geometry")
-  //   VALUES ($1, $2, $3, $4, ST_SetSRID(ST_GeomFromGeoJSON($5), 4326))`
-
-  const wkt = row.geometry.coordinates.map((point) => point.join(' ')).join(', ')
-
   const query = `
-    INSERT INTO traffic_history (partition_id, segment_id, jam_factor, "data", "geometry")
-    VALUES ($1, $2, $3, $4, ST_GeomFromText('LINESTRING(${wkt})'::text, 4326))`
+    INSERT INTO here.traffic_history (partition_id, segment_id, jam_factor, "data", "geometry")
+    VALUES ($1, $2, $3, $4, ST_SetSRID(ST_GeomFromGeoJSON($5), 4326))`
 
   await client.query(query, [
     row.partitionId,
     row.segmentId,
     row.jamFactor,
-    row.data
+    row.data,
+    row.geometry
   ])
 }
 
