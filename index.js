@@ -141,7 +141,7 @@ async function insert (client, batch) {
     ${row.segmentId},
     ${row.jamFactor},
     '${JSON.stringify(row.data).replace(/\'/g, '\'\'')}'::json,
-    ST_SetSRID(ST_GeomFromGeoJSON('${JSON.stringify(row.geometry)}'), 4326)
+    ST_SetSRID(ST_GeomFromGeoJSON('${JSON.stringify(row.geometry)}'::text), 4326)
   )`
 
   const query = `
