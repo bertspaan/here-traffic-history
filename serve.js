@@ -30,9 +30,9 @@ app.get('/tiles/:z/:x/:y.mvt', async (req, res) => {
       SELECT
         segment_id,
         jam_factor,
-        ST_AsMVTGeom(geometry, ST_TileEnvelope($1, $2, $3), 4096, 256, true) AS geometry
+        ST_AsMVTGeom(geometry, TileBBox($1, $2, $3), 4096, 256, true) AS geometry
       FROM traffic_history
-      WHERE geometry && ST_TileEnvelope($1, $2, $3)
+      WHERE geometry && TileBBox($1, $2, $3)
     ) ht`
 
   try {

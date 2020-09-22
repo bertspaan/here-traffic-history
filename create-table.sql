@@ -12,3 +12,6 @@ CREATE INDEX ON traffic_history (segment_id);
 CREATE INDEX ON traffic_history ("timestamp");
 CREATE INDEX ON traffic_history (jam_factor);
 CREATE INDEX ON traffic_history USING GIST ("geometry");
+
+-- Also create function TileBBox
+-- from https://github.com/mapbox/postgis-vt-util/blob/master/src/TileBBox.sql
