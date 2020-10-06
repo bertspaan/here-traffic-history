@@ -26,15 +26,15 @@ HERE_ACCESS_KEY_SECRET=<HERE access key secret>
 
 Export data from database to NDJSON:
 
-    ./export.js > traffic-history.ndjson
+    ./export.js > ./data/traffic-history.ndjson
 
 Convert NDJSON to GeoJSON:
 
-    ./ndjson-to-geojson.js < traffic-history.ndjson > traffic-history.geojson
+    ./ndjson-to-geojson.js < ./data/traffic-history.ndjson > ./data/traffic-history.geojson
 
 Group NDJSON data per segment:
 
-    ./prepare.js < traffic-history.ndjson > per-segment.ndjson
+    ./prepare.js < ./data/traffic-history.ndjson > ./data/per-segment.ndjson
 
 To GeoJSON:
 
