@@ -28,13 +28,17 @@ Export data from database to NDJSON:
 
     ./export.js > traffic-history.ndjson
 
+Convert NDJSON to GeoJSON:
+
+    ./ndjson-to-geojson.js < traffic-history.ndjson > traffic-history.geojson
+
 Group NDJSON data per segment:
 
     ./prepare.js < traffic-history.ndjson > per-segment.ndjson
 
 To GeoJSON:
 
-    cat per-segment.ndjson | ../../boven.land/ndjson-to-geojson/ndjson-to-geojson.js > per-segment.geojson
+    cat per-segment.ndjson | ./ndjson-to-geojson.js > per-segment.geojson
 
 Create vector tiles:
 
@@ -43,6 +47,8 @@ Create vector tiles:
     tippecanoe -l "traffic-history" -zg -r1 -pk -pf --no-tile-size-limit --no-feature-limit -B 6 -o traffic-history.mbtiles --extend-zooms-if-still-dropping --no-tile-compression per-segment.geojson
 
 ## Tools
+
+Timestamps grouped by hour, sorted and unique:
 
      cat traffic-history.ndjson | jq -r '.timestamp[:-11]' | sort | uniq
 
