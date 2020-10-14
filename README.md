@@ -36,9 +36,9 @@ Group NDJSON data per segment:
 
     ./prepare.js < ./data/traffic-history.ndjson > ./data/per-segment.ndjson
 
-To GeoJSON:
+Convert NDJSON to GeoJSON:
 
-    cat per-segment.ndjson | ./ndjson-to-geojson.js > per-segment.geojson
+    ./ndjson-to-geojson.js < ./data/per-segment.ndjson > ./data/per-segment.geojson
 
 Create vector tiles:
 
@@ -50,5 +50,5 @@ Create vector tiles:
 
 Timestamps grouped by hour, sorted and unique:
 
-     cat traffic-history.ndjson | jq -r '.timestamp[:-11]' | sort | uniq
+     cat ./data/traffic-history.ndjson | jq -r '.timestamp[:-11]' | sort | uniq
 
