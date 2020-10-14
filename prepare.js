@@ -5,7 +5,7 @@ const H = require('highland')
 const msPerHour = 1000 * 60 * 60
 
 function perHour (timestampMin, hoursLength, data) {
-  const hours = Array.from({ hoursLength }, (_, i) => NaN)
+  const hours = Array.from({ length: hoursLength }, (_, i) => NaN)
 
   data.forEach((row) => {
     const index = Math.floor((new Date(row.timestamp) - new Date(timestampMin)) / msPerHour)
