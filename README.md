@@ -40,12 +40,6 @@ Convert NDJSON to GeoJSON:
 
     ./ndjson-to-geojson.js < ./data/per-segment.ndjson > ./data/per-segment.geojson
 
-Create vector tiles:
-
-    tippecanoe -l "traffic-history" -zg -o traffic-history.mbtiles --no-tile-size-limit --drop-densest-as-needed per-segment.geojson
-
-    tippecanoe -l "traffic-history" -zg -r1 -pk -pf --no-tile-size-limit --no-feature-limit -B 6 -o traffic-history.mbtiles --extend-zooms-if-still-dropping --no-tile-compression per-segment.geojson
-
 ## Tools
 
 Timestamps grouped by hour, sorted and unique:
